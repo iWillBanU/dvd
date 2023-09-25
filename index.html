@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DVD</title>
+    <style>
+        body {
+            background-color: black;
+        }
+
+        img {
+            position: fixed;
+            width: 200px;
+        }
+
+        span {
+            font-family: monospace;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Remove the style tag to show debug info -->
+    <span style="display: none;"></span>
+    <img src="dvd.svg" alt="DVD logo" style="
+            filter: invert(19%) sepia(95%) saturate(7312%) hue-rotate(359deg) brightness(93%) contrast(116%);
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+    ">
+    <script>
+        const COLORS = [
+            "invert(19%) sepia(95%) saturate(7312%) hue-rotate(359deg) brightness(93%) contrast(116%)",
+            "invert(65%) sepia(56%) saturate(1804%) hue-rotate(358deg) brightness(100%) contrast(107%)",
+            "invert(91%) sepia(81%) saturate(7499%) hue-rotate(358deg) brightness(107%) contrast(101%)",
+            "invert(64%) sepia(83%) saturate(4545%) hue-rotate(89deg) brightness(123%) contrast(123%)",
+            "invert(9%) sepia(99%) saturate(5861%) hue-rotate(245deg) brightness(94%) contrast(148%)",
+            "invert(22%) sepia(63%) saturate(4098%) hue-rotate(292deg) brightness(111%) contrast(137%)"
+        ];
+        const IMG = document.querySelector("img");
+        const SPAN = document.querySelector("span");
+
+        let color = 0;
+        let angle = Math.random() * 2 * Math.PI;
+        let xVel = Math.cos(angle) * 1.5;
+        let yVel = Math.sin(angle) * 1.5;
+        let x = innerWidth / 2;
+        let y = innerHeight / 2;
+        let temp;
+
+        function cycleColor() {
+            color = ++color % COLORS.length;
+            IMG.style.filter = COLORS[color];
+        }
+
+        function frame() {
+            if (y < IMG.height / 2) {
+                temp = xVel;
+                xVel = (xVel / Math.abs(xVel)) * Math.abs(yVel);
+                yVel = Math.abs(temp);
+                cycleColor();
+            } else if (y > innerHeight - IMG.height / 2) {
+                temp = xVel;
+                xVel = (xVel / Math.abs(xVel)) * Math.abs(yVel);
+                yVel = -1 * Math.abs(temp);
+                cycleColor();
+            }
+            if (x < IMG.width / 2) {
+                temp = yVel;
+                yVel = (yVel / Math.abs(yVel)) * Math.abs(xVel);
+                xVel = Math.abs(temp);
+                cycleColor();
+            } else if (x > innerWidth - IMG.width / 2) {
+                temp = yVel;
+                yVel = (yVel / Math.abs(yVel)) * Math.abs(xVel);
+                xVel = -1 * Math.abs(temp);
+                cycleColor();
+            }
+
+            x += xVel;
+            y += yVel;
+            IMG.style.top = `${y}px`;
+            IMG.style.left = `${x}px`;
+            SPAN.innerText = `x: ${x}\ny: ${y}\nxVel: ${xVel}\nyVel: ${yVel}`;
+            requestAnimationFrame(frame);
+        }
+
+        requestAnimationFrame(frame);
+    </script>
+</body>
+</html>
